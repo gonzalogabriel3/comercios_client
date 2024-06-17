@@ -1,0 +1,44 @@
+/* src/components/Layout.css */
+.layout-container {
+    padding-top: 70px; /* Ajusta esto según la altura de tu Navbar */
+}
+
+.sidebar {
+    position: fixed;
+    top: 70px; /* Ajusta esto según la altura de tu Navbar */
+    bottom: 0;
+    left: 0;
+    width: 200px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.content {
+    margin-left: 16%; /* Debe ser mayor al ancho del sidebar para dejar espacio */
+    padding: 20px;
+}
+
+
+/*Estilo para offcanvas*/
+
+.offcanvas-custom .offcanvas-body {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.offcanvas-custom .offcanvas-header {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.offcanvas-custom .offcanvas-footer {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.offcanvas-custom .dropdown-menu {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
