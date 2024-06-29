@@ -4,6 +4,7 @@ import { DataProvider } from './context';
 import ProtectedRoutes from './routes/ProtectedRoutes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'leaflet/dist/leaflet.css';
 
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";

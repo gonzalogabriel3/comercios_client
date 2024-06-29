@@ -42,3 +42,30 @@
     color: white;
 }
 
+
+.transparent-border {
+    border: 6px solid rgba(230, 230, 230, 0.9); /* 50% transparencia */
+    width: 60%;
+  }
+
+.active-nav-link {
+    color: red;
+    font-weight: bold;
+    border-left: 4px solid white; /* Puedes cambiar esto por cualquier estilo que prefieras */
+    background-color: rgba(255, 255, 255, 0.1); /* Un ligero cambio de color de fondo para resaltar */
+}
+
+.leaflet-control-attribution {
+    display: none;
+}
+
+.selected-nav {
+    background-color: rgba(16, 108, 252, 0.9) !important;
+    color: white !important;
+    border: 3px solid rgba(234, 237, 237, 0.8) !important;
+}
+
+.prueba{
+    color: red;
+}
+

@@ -1,88 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, FloatingLabel, Form, InputGroup, Modal, Offcanvas, Placeholder, Row } from "react-bootstrap";
+import { Badge, Button, Col, FloatingLabel, Form, Image, InputGroup, Modal, Offcanvas, Placeholder, ProgressBar, Row, Spinner } from "react-bootstrap";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 import logo from "../../images/logo.png";
 import { useGlobalData } from "../../context";
 import DataTable from 'react-data-table-component';
 import '../Layout.css'
-import data from "../../dataExample/Comercios";
+import {data,rubros} from "../../dataExample/Comercios";
+import PlantillaRecarga from "../../components/PlantillaRecarga";
 
 
 const Main = () => {
-    const { showModalCarga, hiddenModalCarga,appData,setAppData } = useGlobalData();
+    const { 
+        showModalCarga, 
+        hiddenModalCarga,
+        appData,
+        setAppData,
+        logo_alimentos,
+        logo_carniceria,
+        logo_farmacia,
+        logo_fiambres,
+        logo_panaderia,
+        logo_verduleria,
+        localidad
+    } = useGlobalData();
+
     const [comercioSel,setComercioSel] = useState(null);
     const [descripcion,setDescripcion] = useState(false);
     
-    useEffect(() => {
-        if(!appData.comercios){
-            
-            setTimeout(() => {
-                setAppData((prevData) => ({
-                    ...prevData,
-                    comercios: data,
-                }));
-            }, 4000);
-            
-        }
-
-    }, [])
     
-    const newComercio = () => {
-        const status=300
-        setModalNuevo(false)
-        showModalCarga({ mensaje: "Guardando Informacion" });
-        nuevoComercio.id=99
-        nuevoComercio.ciudad_id=6
-        console.log(nuevoComercio)
-        setTimeout(() => {
-            if(status==200){
-                setAppData((prevData) => ({
-                    ...prevData,
-                    comercios: [nuevoComercio,...prevData.comercios],
-                }));
-                // Notificación al usuario
-                iziToast.show({
-                    backgroundColor: '#0d6efd',
-                    messageColor: '#ffffff',
-                    image: logo,
-                    title: '',
-                    message: `Se ha cargado '${nuevoComercio.nombre}' al listado de comercios`,
-                    position: 'topCenter',
-                    progressBarColor: 'rgb(0, 255, 184)',
-                    onOpening: function (instance, toast) {
-                        console.info('callback abriu!');
-                    },
-                    onClosing: function (instance, toast, closedBy) {
-                        console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
-                    }
-                });
-            }else{
-                // Notificación de error
-                iziToast.show({
-                    backgroundColor: '#F12F29',
-                    messageColor: '#ffffff',
-                    image: logo,
-                    title: '',
-                    message: `No se pudo agregar comercio`,
-                    position: 'topCenter',
-                    progressBarColor: 'rgb(0, 255, 184)',
-                    onOpening: function (instance, toast) {
-                        console.info('callback abriu!');
-                    },
-                    onClosing: function (instance, toast, closedBy) {
-                        console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
-                    }
-                });
-
-            }
-            
-            hiddenModalCarga();
-            
-            setNuevoComercio({nombre:'',direccion:'',latitud:'',longitud:'',rubros:[]})
-        }, 4000);
-    };
-
     const customStyles = {
         pagination: {
             style: {
@@ -141,6 +87,60 @@ const Main = () => {
     const [modalNuevo,setModalNuevo] = useState(false);
     const [nuevoComercio,setNuevoComercio] = useState({nombre:'',direccion:'',latitud:'',longitud:'',rubros:[]})
     
+    const newComercio = () => {
+        const status=200
+        setModalNuevo(false)
+        showModalCarga({ mensaje: "Guardando Informacion" });
+        nuevoComercio.id=99
+        nuevoComercio.ciudad_id=6
+        console.log(nuevoComercio)
+        setTimeout(() => {
+            if(status==200){
+                setAppData((prevData) => ({
+                    ...prevData,
+                    comercios: [nuevoComercio,...prevData.comercios],
+                }));
+                // Notificación al usuario
+                iziToast.show({
+                    backgroundColor: '#0d6efd',
+                    messageColor: '#ffffff',
+                    image: logo,
+                    title: '',
+                    message: `Se ha cargado '${nuevoComercio.nombre}' al listado de comercios`,
+                    position: 'topCenter',
+                    progressBarColor: 'rgb(0, 255, 184)',
+                    onOpening: function (instance, toast) {
+                        console.info('callback abriu!');
+                    },
+                    onClosing: function (instance, toast, closedBy) {
+                        console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
+                    }
+                });
+            }else{
+                // Notificación de error
+                iziToast.show({
+                    backgroundColor: '#F12F29',
+                    messageColor: '#ffffff',
+                    image: logo,
+                    title: '',
+                    message: `No se pudo agregar comercio`,
+                    position: 'topCenter',
+                    progressBarColor: 'rgb(0, 255, 184)',
+                    onOpening: function (instance, toast) {
+                        console.info('callback abriu!');
+                    },
+                    onClosing: function (instance, toast, closedBy) {
+                        console.info('closedBy: ' + closedBy); // tells if it was closed by 'drag' or 'button'
+                    }
+                });
+
+            }
+            
+            hiddenModalCarga();
+            
+            setNuevoComercio({nombre:'',direccion:'',latitud:'',longitud:'',rubros:[]})
+        }, 4000);
+    };
     
     const handleChangeNew = (event) => {
         const { name, value } = event.target;
@@ -264,6 +264,7 @@ const Main = () => {
                     comercios: updatedComercios
                 };
             });
+            setFilteredData('')
             hiddenModalCarga();
             // Notificación al usuario
             iziToast.show({
@@ -285,10 +286,21 @@ const Main = () => {
         }, 4000);
     }
 
+   
+
     return (
         <>
-           {appData.comercios ? (
-            <>
+        {appData.localidad ? (
+        <>
+        <h4 style={{marginBottom:"2%"}}>
+        <Badge pill bg="primary">
+                Localidad: {appData.localidad.descripcion}
+        </Badge>
+        </h4>
+        </>):null}
+        {appData.comercios ? (
+           <>
+            
             <Row>
                 <Col sm={3}>
                     <input
@@ -316,7 +328,7 @@ const Main = () => {
                             controlId="floatingInput"
                             label="Nombre del local"
                         >
-                        <Form.Control size="sm" name="nombre" type="text" onChange={handleChangeNew} value={nuevoComercio.nombre} placeholder="Nombre del local" style={{marginBottom:"2%"}}/>
+                        <Form.Control size="sm" autoComplete="off" name="nombre" type="text" onChange={handleChangeNew} value={nuevoComercio.nombre} placeholder="Nombre del local" style={{marginBottom:"2%"}}/>
                         </FloatingLabel>
                         {nuevoComercio.nombre.length <= 3 ? (
                             <>
@@ -331,7 +343,7 @@ const Main = () => {
                             controlId="floatingInput"
                             label="Direccion"
                         >
-                        <Form.Control size="sm" name="direccion" type="text" onChange={handleChangeNew} value={nuevoComercio.direccion} placeholder="Direccion del local" style={{marginBottom:"2%"}}/>
+                        <Form.Control size="sm" autoComplete="off" name="direccion" type="text" onChange={handleChangeNew} value={nuevoComercio.direccion} placeholder="Direccion del local" style={{marginBottom:"2%"}}/>
                         </FloatingLabel>
                         {nuevoComercio.direccion.length <= 3 ? (
                             <p style={{color:"grey",fontStyle:"italic",fontSize:"12px",marginLeft:"1%"}}><i class="bi bi-exclamation-triangle"></i>&nbsp;Ingrese direccion del local </p>
@@ -346,7 +358,7 @@ const Main = () => {
                             controlId="floatingInput"
                             label="Latitud"
                         >
-                        <Form.Control size="sm" name="latitud" type="text" onChange={handleChangeNew} value={nuevoComercio.latitud} placeholder="L" style={{marginBottom:"2%"}}/>
+                        <Form.Control size="sm" autoComplete="off" name="latitud" type="text" onChange={handleChangeNew} value={nuevoComercio.latitud} placeholder="L" style={{marginBottom:"2%"}}/>
                         </FloatingLabel>
                         
                         {/*Longitud */}
@@ -355,7 +367,7 @@ const Main = () => {
                             controlId="floatingInput"
                             label="Longitud"
                         >
-                        <Form.Control size="sm" name="longitud" type="text" onChange={handleChangeNew} value={nuevoComercio.longitud} placeholder="Longitud del local" style={{marginBottom:"2%"}}/>
+                        <Form.Control size="sm" autoComplete="off" name="longitud" type="text" onChange={handleChangeNew} value={nuevoComercio.longitud} placeholder="Longitud del local" style={{marginBottom:"2%"}}/>
                         </FloatingLabel>
                         
                             
@@ -365,54 +377,55 @@ const Main = () => {
                         ):null}
 
                         <label style={{marginBottom:"2%",color:"grey"}}>Rubros</label>
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Alimentos basicos(incluye arroz,harina,azucar,etc)"
-                            value={1}
-                            type="checkbox"
-                            id="1"
-                            onChange={handleCheckboxChange}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Carniceria"
-                            value={2}
-                            type="checkbox"
-                            id="2"
-                            onChange={handleCheckboxChange}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Verduleria"
-                            value={3}
-                            type="checkbox"
-                            id="3"
-                            onChange={handleCheckboxChange}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Farmacia"
-                            value={4}
-                            type="checkbox"
-                            id="4"
-                            onChange={handleCheckboxChange}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Panaderia"
-                            value={5}
-                            type="checkbox"
-                            id="5"
-                            onChange={handleCheckboxChange}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Fiambreria"
-                            value={6}
-                            type="checkbox"
-                            id="6"
-                            onChange={handleCheckboxChange}
-                        />
+                        
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="1">
+                            <Form.Check.Input type="checkbox" value={1} onChange={handleCheckboxChange} />
+                            <Form.Check.Label>
+                            <Image src={logo_alimentos} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Alimentos básicos (incluye arroz, harina, azúcar, etc)
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="2">
+                            <Form.Check.Input type="checkbox" value={2} onChange={handleCheckboxChange} />
+                            <Form.Check.Label>
+                            <Image src={logo_carniceria} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Carniceria
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="3">
+                            <Form.Check.Input type="checkbox" value={3} onChange={handleCheckboxChange} />
+                            <Form.Check.Label>
+                            <Image src={logo_verduleria} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Verduleria
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="4">
+                            <Form.Check.Input type="checkbox" value={4} onChange={handleCheckboxChange} />
+                            <Form.Check.Label>
+                            <Image src={logo_farmacia} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Farmacia
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="5">
+                            <Form.Check.Input type="checkbox" value={5} onChange={handleCheckboxChange} />
+                            <Form.Check.Label>
+                            <Image src={logo_panaderia} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Panaderia
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="6">
+                            <Form.Check.Input type="checkbox" value={6} onChange={handleCheckboxChange} />
+                            <Form.Check.Label>
+                            <Image src={logo_fiambres} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Fiambreria
+                            </Form.Check.Label>
+                        </Form.Check>
+                       
                         
                         {nuevoComercio.rubros.length <= 0 ? (
                             <p style={{color:"grey",fontStyle:"italic",fontSize:"12px",marginLeft:"1%",marginTop:"4%"}}><i class="bi bi-exclamation-triangle"></i>&nbsp;Debe seleccionar al menos un rubro </p>
@@ -437,7 +450,7 @@ const Main = () => {
                 </Col>
             </Row>
             <Row>
-                <Col sm={12}>
+                <Col xs={12}>
                     
                     <DataTable
                         pagination
@@ -509,66 +522,60 @@ const Main = () => {
                         ):null}
 
                         <label style={{marginBottom:"2%",color:"grey"}}>Rubros</label>
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Alimentos basicos(incluye arroz,harina,azucar,etc)"
-                            value={1}
-                            name="alimentos"
-                            type="checkbox"
-                            id="1"
-                            checked={comercioSel.rubros.includes(1)}
-                            onChange={handleCheckboxChangeEdit}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Carniceria"
-                            value={2}
-                            name="carniceria"
-                            type="checkbox"
-                            id="2"
-                            checked={comercioSel.rubros.includes(2)}
-                            onChange={handleCheckboxChangeEdit}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Verduleria"
-                            value={3}
-                            name="verduleria"
-                            type="checkbox"
-                            id="3"
-                            checked={comercioSel.rubros.includes(3)}
-                            onChange={handleCheckboxChangeEdit}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Farmacia"
-                            value={4}
-                            name="farmacia"
-                            type="checkbox"
-                            id="4"
-                            checked={comercioSel.rubros.includes(4)}
-                            onChange={handleCheckboxChangeEdit}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Panaderia"
-                            value={5}
-                            name="panaderia"
-                            type="checkbox"
-                            id="5"
-                            checked={comercioSel.rubros.includes(5)}
-                            onChange={handleCheckboxChangeEdit}
-                        />
-                        <Form.Check
-                            style={{color:"grey"}}
-                            label="Fiambreria"
-                            value={6}
-                            name="fiambreria"
-                            type="checkbox"
-                            id="6"
-                            checked={comercioSel.rubros.includes(6)}
-                            onChange={handleCheckboxChangeEdit}
-                        />
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="1">
+                            <Form.Check.Input type="checkbox" value={1} checked={comercioSel.rubros.includes(1)}
+                            onChange={handleCheckboxChangeEdit} />
+                            <Form.Check.Label>
+                            <Image src={logo_alimentos} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Alimentos básicos (incluye arroz, harina, azúcar, etc)
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="2">
+                            <Form.Check.Input type="checkbox" value={2} checked={comercioSel.rubros.includes(2)}
+                            onChange={handleCheckboxChangeEdit} />
+                            <Form.Check.Label>
+                            <Image src={logo_carniceria} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Carniceria
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="3">
+                            <Form.Check.Input type="checkbox" value={3} checked={comercioSel.rubros.includes(3)}
+                            onChange={handleCheckboxChangeEdit} />
+                            <Form.Check.Label>
+                            <Image src={logo_verduleria} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Verduleria
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="4">
+                            <Form.Check.Input type="checkbox" value={4} checked={comercioSel.rubros.includes(4)}
+                            onChange={handleCheckboxChangeEdit} />
+                            <Form.Check.Label>
+                            <Image src={logo_farmacia} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Farmacia
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="5">
+                            <Form.Check.Input type="checkbox" value={5} checked={comercioSel.rubros.includes(5)}
+                            onChange={handleCheckboxChangeEdit} />
+                            <Form.Check.Label>
+                            <Image src={logo_panaderia} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Panaderia
+                            </Form.Check.Label>
+                        </Form.Check>
+
+                        <Form.Check style={{ color: "grey" }} type="checkbox" id="6">
+                            <Form.Check.Input type="checkbox" value={6} checked={comercioSel.rubros.includes(6)}
+                            onChange={handleCheckboxChangeEdit} />
+                            <Form.Check.Label>
+                            <Image src={logo_fiambres} width={30} height={30} style={{ marginLeft: '10px' }} />
+                                &nbsp;Fiambreria
+                            </Form.Check.Label>
+                        </Form.Check>
+                        
                         
                         {comercioSel.rubros.length <= 0 ? (
                             <p style={{color:"grey",fontStyle:"italic",fontSize:"12px",marginLeft:"1%",marginTop:"4%"}}><i class="bi bi-exclamation-triangle"></i>&nbsp;Debe seleccionar al menos un rubro </p>
@@ -618,14 +625,15 @@ const Main = () => {
                     <>
                         <Row>
                             <Col sm={12}>
-                            <Placeholder as="p" animation="wave">
-                                <Placeholder xs={4} />
-                            </Placeholder>
-                            {Array.from({ length: 11 }, (_, i) => (
-                                <Placeholder as="p" animation="glow">
-                                    <Placeholder xs={8} />
-                                </Placeholder>
-                            ))}
+                             <PlantillaRecarga cantidad={1} tamanio={2} bg="primary"></PlantillaRecarga>
+                            </Col>
+                            <Col sm={4} style={{marginTop:"2%"}}>
+                                <PlantillaRecarga cantidad={1} tamanio={8} bg="primary"></PlantillaRecarga>
+                            </Col>
+                            <Col sm={6}></Col>
+                            <Col sm={2}><Spinner animation="border" variant="primary" /></Col>
+                            <Col sm={12} style={{marginTop:"1%"}}>
+                             <PlantillaRecarga cantidad={17} tamanio={12} bg="secondary"></PlantillaRecarga>
                             </Col>
                         </Row>
                     </>
@@ -640,11 +648,21 @@ const Main = () => {
                     <p><i class="bi bi-map"></i>&nbsp;Direccion: {comercioSel.direccion}</p>
                     <p><i class="bi bi-geo-alt"></i>&nbsp;Ubicacion: {comercioSel.latitud},{comercioSel.longitud}</p>
                     <p>Rubro comercial:</p>
-                    <ul>
-                    {comercioSel.rubros.map((rubro, index) => (
-                        <li key={index}>{rubro}</li>
-                    ))}
+                    <ul style={{ listStyleType: "none" }}>
+                        {appData.rubros.map((rubro, index) => {
+                                const logo = rubro.id === 1 ? logo_alimentos 
+                                : rubro.id === 2 ? logo_carniceria 
+                                : rubro.id === 3 ? logo_verduleria 
+                                : rubro.id === 4 ? logo_farmacia
+                                : rubro.id === 5 ? logo_panaderia
+                                : rubro.id === 6 ? logo_fiambres
+                                : null;                     
+                            return comercioSel.rubros.find(r => r === rubro.id) ? (    
+                                <li key={index}><Image src={logo} width={30} height={30} /> {rubro.descripcion}</li>
+                            ) : null;
+                        })}
                     </ul>
+
                     
                 
                 </Offcanvas.Body>
